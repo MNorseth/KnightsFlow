@@ -1,0 +1,217 @@
+<!--
+=====================================================
+Project #3 - Knights Max Flow
+=====================================================
+
+Authors:
+------------
+Gabriel Rivera - gabriel-rivera-457@csu.fullerton.edu
+Mitchell Norseth - mitchell2124@csu.fullerton.edu
+Mauricio Macias - mauricio.macias@csu.fullerton.edu
+
+Description:
+------------
+
+-->
+
+<!doctype html>
+
+<html>
+<head>
+	<h1><center> Project #3: Knights Max Flow</center></h1>
+	<center><h2>Team MGM<h2></center>
+	<center><h4>Mitchell Norseth, Gabriel Rivera, Mauricio Macias</h4></center>
+</head>
+
+<body style="background: white;">
+	<center>
+    <canvas id="canvas" width="420px" height="420px" style="margin:20px;"></canvas>
+	</center>
+    <script type="text/javascript" language="javascript">
+	
+	
+    var bw = 400;  //width
+    var bh = 400;  //height
+    var p = 10;	   //padding
+    var cw = bw + (p*2) + 1;
+    var ch = bh + (p*2) + 1;
+	var range = 31;
+    var canvas = document.getElementById("canvas");
+    var context = canvas.getContext("2d");
+	var canvasData = context.getImageData(0,0, cw, ch);
+	var arr = []; //create 2d bool array called arr
+	
+	
+	
+    function grid(){
+		
+		for(var r = 0; r < 10; r++) {
+			arr[r] = []; //arr contains a 10 by 10 cell array
+			for(var c = 0; c < 10; c++) {
+			arr[r][c] = Math.floor(Math.random()* range/2 ) * 2; //arr is filled with random even values 0-30
+			}
+		}
+		
+		
+		
+		//Draws vertical lines of grid
+        for (var x = 0; x <= bw; x += 40) {
+            context.moveTo(0.5 + x + p, p);
+            context.lineTo(0.5 + x + p, bh + p);
+        }
+
+		//Draws horizontal lines of grid
+        for (var y = 0; y <= bh; y += 40) {
+            context.moveTo(p, 0.5 + y + p);
+            context.lineTo(bw + p, 0.5 + y + p);
+        }
+		
+        context.strokeStyle = "black";
+        context.stroke();
+    }
+	
+	//Draws a dot
+	function dot(x,y, context) {
+		context.beginPath();
+		context.arc(x, y, 3, 0, 8 * Math.PI, true);
+		context.stroke();
+		context.fill(); 
+	}
+	
+	//Draws an red dot for source and sink
+	function dotSS(x,y, context) {
+		context.beginPath();
+		context.arc(x, y, 3, 0, 8 * Math.PI, true);
+		context.stroke();
+		context.fillStyle = "red";
+		context.fill();
+	}
+	
+	
+	//Puts the items from the 2d array onto the grid to show each cell's value
+	function numbers(inc, center, descent)  {
+		context.font = "10px Arial";
+		context.fillStyle = "black";
+		
+		if(inc === 10) {
+			return;
+		}
+		
+		for(var i = 0; i < 10; i++) {
+			
+			context.fillText(arr[inc][i], center, descent);
+			center += 40;
+		}
+		
+		inc++;
+		
+		numbers(inc, 25, descent += 40.5);	
+	}
+	
+	//Places dot in coordinate specified by x and y. (Remember index is from 0-9 not 1-10)
+	function placedot(x,y) {
+		if(x === 0) {
+			if(y === 0) {
+				dot(30,27, context);
+			}
+			if(y >= 1) {
+				var i = y * 40 + 30;
+				dot(i, 27, context);
+			}
+		}
+		
+		if(x > 0) {
+			if (y >= 0) {
+				var i = y * 40 + 30;
+				var j = x * 40 + 27;
+				dot(i, j, context);
+			}
+		}
+	}
+	
+	
+	
+	function drawline(x,y) {
+		
+		if(x == 3 && y == 3) {
+			context.beginPath();
+			context.moveTo(110,70); //From Source point
+			context.lineTo(150,150); 
+			context.stroke();
+			placedot(3,3);
+			context.moveTo(150,150);
+		}
+		
+		if(x == 5 && y == 4) {
+			context.lineTo(190,230);
+			context.stroke();
+			placedot(5,4);
+			context.moveTo(190,230);
+		}
+		
+		if (x == 2 && y == 4) {
+			context.beginPath();
+			context.moveTo(110,70); //From Source point
+			context.lineTo(190, 110);
+			context.stroke();
+			placedot(2,4);
+			context.moveTo(190,110);
+		}
+		
+		if (x == 4 && y == 5) {
+			context.lineTo(230, 190);
+			context.stroke();
+			placedot(4,5);
+			context.moveTo(230,190);
+		}
+		
+		if (x == 6 && y == 6) {
+			context.lineTo(270, 270);
+			context.stroke();
+			placedot(6,6);
+			context.moveTo(270, 270);
+		}
+		
+		if(x == 7 && y == 5) {
+			context.lineTo(230, 310);
+			context.stroke();
+			placedot(7,5);
+			context.moveTo(230, 310);
+		}
+		
+		if(x == 8 && y == 7) {
+			context.lineTo(310, 350);
+			context.stroke();
+			context.moveTo(310, 350);
+		}
+	}
+	
+	grid();
+	dotSS(110,70, context); // Places a red dot on Source (1,2) 
+	dotSS(310, 350, context); // Places a red dot on Sink (8,7)
+	numbers(0, 25, 42);
+	
+	//draw line test #1
+	
+	/*drawline(3,3);
+	drawline(5,4);
+	drawline(7,5);
+	drawline(8,7);*/
+	
+	//test #2
+	
+	drawline(2,4);
+	drawline(4,5);
+	drawline(6,6);
+	drawline(8,7);
+	
+	
+	
+	
+	
+
+    </script>
+</body>
+</html>
+
+
